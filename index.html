@@ -1,22 +1,299 @@
-<title>HTTPS.cl</title>
-</style>
-        <link rel="stylesheet" type="text/css" media="all" href="estilo.css" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<style type="text/css">
-</style>
-<div id="wrapper">
-  <div id="header">
-    <div align="center">
-      <p>&nbsp;</p>
-      <p><img name="" src="https.png"/></p>
-    </div>
-  </div>
-  <div id="content">
-    <div align="center">
-      <p>&nbsp;</p>
-      <p><a href="pubkey.asc">pgp key</a></p>
-    </div>
-  </div>
-  <div id="footer"><a href='https://www.cloudflare.com/'><img name="" src="cloudflare.png" width="80"/></a>
-  <a href="#" onclick="window.open('https://www.sitelock.com/verify.php?site=www.https.cl','SiteLock','width=600,height=600,left=160,top=170');" ><img alt="website security" title="SiteLock"  src="//shield.sitelock.com/shield/www.https.cl"/></a> <a href='https://cloudflare.ipv6-test.com/validate.php?url=www.https.cl'><img src='https://ajax.cloudflare.com/cdn-cgi/custom/images/button-ipv6-80x15.png' alt='ipv6 ready' width="80" title='ipv6 ready' /></a> <a href="https://www.https.cl">https.cl</a> Copyright 2020. </div>
-</div>
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTTPS</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Courier New', monospace;
+        background: #1a1a1a;
+        color: #d1d5db;
+        overflow-x: hidden;
+        line-height: 1.6;
+      }
+
+      /* Map Background */
+      .map-background {
+        position: fixed;
+        top: 0;
+        left: 300px;
+        width: 200%;
+        height: 100vh;
+        z-index: -2;
+        opacity: 0.1;
+        animation: mapMove 60s linear infinite;
+      }
+
+      .map-background svg {
+        width: 100%;
+        height: 100%;
+        fill: none;
+        stroke: #475569; /* Slate oscuro */
+        stroke-width: 1;
+      }
+
+      /* Header */
+      header {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding: 20px 40px;
+        background: rgba(26, 26, 26, 0.9);
+        backdrop-filter: blur(3px);
+        z-index: 10;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .logo {
+        font-style: italic;
+        font-size: 20px;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        text-shadow: 0 0 5px #64748b;
+      }
+
+      nav a {
+        color: #475569;
+        text-decoration: none;
+        margin-left: 20px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+      }
+
+      nav a:hover {
+        color: #d1d5db;
+        text-shadow: 0 0 10px #d1d5db;
+      }
+
+      /* Main Section */
+      .main {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .main::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          45deg,
+          rgba(71, 85, 105, 0.03) 0px,
+          rgba(71, 85, 105, 0.03) 1px,
+          transparent 1px,
+          transparent 30px
+        );
+        animation: gridFlicker 0.7s infinite;
+        z-index: -1;
+      }
+
+      /* Glitch Title */
+      .glitch-title {
+        position: relative;
+        font-size: 150px;
+        font-weight: 600;
+        font-style: italic;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        color: #64748b;
+        text-shadow: 
+          0 0 10px #64748b,
+          0 0 20px #475569;
+      }
+
+      .glitch-title::before {
+        content: "HTTPS://";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        color: #475569;
+        opacity: 0.8;
+        transform: translate(4px, -4px);
+        animation: glitchShift 0.5s infinite alternate;
+        z-index: -1;
+      }
+
+      .glitch-title::after {
+        content: "HTTPS";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        color: #333333;
+        opacity: 0.6;
+        transform: translate(-4px, 4px);
+        animation: glitchShift 0.7s infinite alternate-reverse;
+        z-index: -1;
+      }
+
+      /* Contact Info */
+      .contact-info {
+        margin-top: 40px;
+        font-size: 18px;
+      }
+
+      .contact-info p {
+        margin: 10px 0;
+        color: #d1d5db;
+        text-shadow: 0 0 5px #475569;
+      }
+
+      .contact-info a {
+        color: #64748b;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .contact-info a:hover {
+        color: #d1d5db;
+        text-shadow: 0 0 10px #d1d5db;
+      }
+
+      /* Scanline */
+      .scanline {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: rgba(71, 85, 105, 0.1);
+        animation: scan 5s linear infinite;
+        z-index: 1;
+      }
+
+      /* Footer */
+      footer {
+        padding: 20px;
+        text-align: center;
+        background: rgba(26, 26, 26, 0.95);
+        border-top: 1px solid #475569;
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
+
+      footer p {
+        color: #666;
+        font-size: 14px;
+      }
+
+      /* Animations */
+      @keyframes mapMove {
+        0% { transform: translateX(0); }
+        100% { transform: translateX(-50%); }
+      }
+
+      @keyframes glitchShift {
+        0% { transform: translate(4px, -4px); opacity: 0.8; }
+        20% { transform: translate(-4px, 4px); opacity: 0.5; }
+        40% { transform: translate(2px, -2px); clip-path: inset(20% 0 20% 0); }
+        60% { transform: translate(-2px, 2px); opacity: 0.7; }
+        80% { transform: translate(5px, -5px); clip-path: inset(0 0 0 0); }
+        100% { transform: translate(4px, -4px); opacity: 0.8; }
+      }
+
+      @keyframes gridFlicker {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 0.05; }
+      }
+
+      @keyframes scan {
+        0% { top: -10%; }
+        100% { top: 110%; }
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .glitch-title { font-size: 80px; letter-spacing: 5px; }
+        .contact-info { font-size: 16px; }
+        header { padding: 15px 20px; }
+      }
+
+      @media (max-width: 480px) {
+        .glitch-title { font-size: 50px; letter-spacing: 3px; }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Map Background -->
+    <div class="map-background"></div>
+
+    <!-- Header -->
+    <header>
+      <div class="logo">HTTPS.cl</div>
+    </header>
+
+    <!-- Main Section -->
+    <section class="main">
+      <h1 class="glitch-title">HTTPS</h1>
+      <div class="contact-info">
+        <p>Email: <a href="mailto:contacto@https.cl">help@https.cl</a></p>
+      </div>
+      <div class="scanline"></div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <p>© 2025 HTTPS.cl</p>
+    </footer>
+
+    <script>
+      // Cargar el SVG externo
+      fetch('world.svg') // Ajusta la ruta según donde esté tu archivo
+        .then(response => response.text())
+        .then(svgData => {
+          const mapContainer = document.querySelector('.map-background');
+          mapContainer.innerHTML = svgData;
+        })
+        .catch(error => console.error('Error cargando el SVG:', error));
+
+      // Interactividad del título
+      const title = document.querySelector(".glitch-title");
+
+      const handleMove = (e) => {
+        const rect = title.getBoundingClientRect();
+        let x, y;
+
+        if (e.type.includes("touch")) {
+          const touch = e.touches[0];
+          x = touch.clientX - rect.left;
+          y = touch.clientY - rect.top;
+        } else {
+          x = e.clientX - rect.left;
+          y = e.clientY - rect.top;
+        }
+
+        const tiltX = (y - rect.height / 2) / 30;
+        const tiltY = -(x - rect.width / 2) / 30;
+        title.style.transform = `rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+
+        if (Math.random() > 0.9) {
+          title.style.animation = "glitchShift 0.1s";
+          setTimeout(() => title.style.animation = "glitchShift 0.5s infinite alternate", 100);
+        }
+      };
+
+      title.addEventListener("mousemove", handleMove);
+      title.addEventListener("touchmove", handleMove, { passive: false });
+      title.addEventListener("mouseleave", () => {
+        title.style.transform = "rotateX(0deg) rotateY(0deg)";
+      });
+    </script>
+  </body>
+</html>
